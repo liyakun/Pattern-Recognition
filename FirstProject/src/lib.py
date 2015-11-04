@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-from numpy import linspace, zeros_like, sqrt, pi, exp
+from numpy import linspace, vstack, zeros, hstack
 from scipy.stats import norm
+import matplotlib.lines as mlines
 
 
 class Plot2dData:
@@ -43,21 +44,37 @@ class PlotDataDensity:
     def __init__(self):
         pass
 
-    def plot_data_density(self, X, mu, sigma, filename=None):
-        # val = 0
-        # plt.plot(X, zeros_like(X) + val, 'x')
+    def plot_data_density(self, X, filename=None):
 
-        # p = norm.pdf(mu, std)
-        # plt.plot(p, 'k', linewidth=2)
-        counts, bins, ignored = plt.hist(X)
-        plt.plot(bins, 1/(sigma * sqrt(2 * pi)) * exp( - (bins - mu)**2 / (2 * sigma**2) ),linewidth=2, color='r')
-        title = "Fit Results: mu = %.2f,  std = %.2f" % (mu, sigma)
+        # fit a normal distribution to the data
+        mean, std = norm.fit(X)
+
+        # create a figure with fixed size, and its axes
+        fig1 = plt.figure(1, figsize=(14, 14))
+        axs = fig1.add_subplot(111)
+
+        # plot the pdf
+        x = linspace(140, 210, 100)
+        p = norm.pdf(x, mean, std)
+        axs.plot(x, p, 'k', linewidth=2, color='y')
+        title = "Fit Results: mean = %.2f,  std = %.2f" % (mean, std)
         plt.title(title)
+
+        # plot the actual data, set y=0 for all points
+        X = vstack((X, zeros(len(X))))
+        axs.plot(X[0, :], X[1, :], 'ro', label='data', color='blue')
+
+        # add legend
+        plt.plot([], label="normal", color="yellow")
+        f2 = axs.legend(loc=1, shadow=True, fancybox=True, numpoints=1)
+        f2.get_frame().set_alpha(0.5)
 
         # either show figure on screen or write it to disk
         if filename is None:
-            plt.show()
+            fig1.show()
         else:
-            plt.savefig(filename, facecolor='w', edgecolor='w',
+            fig1.savefig(filename, facecolor='w', edgecolor='w',
                         papertype=None, format='pdf', transparent=False,
                         bbox_inches='tight', pad_inches=0.1)
+
+        plt.close()

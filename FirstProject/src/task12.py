@@ -20,8 +20,5 @@ class Task12:
         # read height size information into 1D arrays
         hs = np.array([d[1] for d in data])
 
-        # fit a normal distribution to the data
-        mu, std = norm.fit(hs)
-
         # plot and write to disk
-        PlotDataDensity().plot_data_density(hs, mu, std, '../resources/results/task12/density.pdf')
+        PlotDataDensity().plot_data_density(hs, '../resources/results/task12/density.pdf')
