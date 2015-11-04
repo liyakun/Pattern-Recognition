@@ -26,9 +26,9 @@ class Task11:
 
         x_matrix = np.vstack((ws, hs))
         print x_matrix
-        Plot2dData().plot_data_2d(x_matrix, '../resources/results/task11/plotWH.pdf')
+        Plot2dData().plot_data_2d(x_matrix, '../results/task11/plotWH.pdf')
 
         x_matrix = x_matrix.transpose()
         # exchange first and second columns
         x_matrix[:, [0, 1]] = x_matrix[:, [1, 0]]
-        Plot2dData().plot_data_2d(x_matrix.transpose(), '../resources/results/task11/plotHW.pdf')
+        Plot2dData().plot_data_2d(x_matrix.transpose(), '../results/task11/plotHW.pdf')

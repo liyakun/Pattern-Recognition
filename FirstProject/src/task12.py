@@ -21,4 +21,4 @@ class Task12:
         hs = np.array([d[1] for d in data])
 
         # plot and write to disk
-        PlotDataDensity().plot_data_density(hs, '../resources/results/task12/density.pdf')
+        PlotDataDensity().plot_data_density(hs, '../results/task12/density.pdf')

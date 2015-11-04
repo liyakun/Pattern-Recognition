@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from numpy import linspace, vstack, zeros, hstack
+from numpy import linspace, vstack, zeros
 from scipy.stats import norm
-import matplotlib.lines as mlines
 
 
 class Plot2dData:
