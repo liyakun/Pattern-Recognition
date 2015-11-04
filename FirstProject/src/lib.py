@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+from numpy import linspace, zeros_like, sqrt, pi, exp
+from scipy.stats import norm
 
 
 class Plot2dData:
@@ -34,3 +36,28 @@ class Plot2dData:
                         papertype=None, format='pdf', transparent=False,
                         bbox_inches='tight', pad_inches=0.1)
         plt.close()
+
+
+class PlotDataDensity:
+
+    def __init__(self):
+        pass
+
+    def plot_data_density(self, X, mu, sigma, filename=None):
+        # val = 0
+        # plt.plot(X, zeros_like(X) + val, 'x')
+
+        # p = norm.pdf(mu, std)
+        # plt.plot(p, 'k', linewidth=2)
+        counts, bins, ignored = plt.hist(X)
+        plt.plot(bins, 1/(sigma * sqrt(2 * pi)) * exp( - (bins - mu)**2 / (2 * sigma**2) ),linewidth=2, color='r')
+        title = "Fit Results: mu = %.2f,  std = %.2f" % (mu, sigma)
+        plt.title(title)
+
+        # either show figure on screen or write it to disk
+        if filename is None:
+            plt.show()
+        else:
+            plt.savefig(filename, facecolor='w', edgecolor='w',
+                        papertype=None, format='pdf', transparent=False,
+                        bbox_inches='tight', pad_inches=0.1)

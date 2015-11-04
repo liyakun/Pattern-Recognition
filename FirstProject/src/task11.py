@@ -16,7 +16,7 @@ class Task11:
         dt = np.dtype([('w', np.float), ('h', np.float), ('g', np.str_, 1)])
         data = np.loadtxt('../resources/whData.dat', dtype=dt, comments='#', delimiter=None)
 
-        # read height, weight and gender information into 1D arrays
+        # read weight, height, and gender information into 1D arrays
         ws = np.array([d[0] for d in data])
         hs = np.array([d[1] for d in data])
 
@@ -25,4 +25,10 @@ class Task11:
         ws = np.delete(ws, np.where(ws < 0), None)
 
         x_matrix = np.vstack((ws, hs))
+        print x_matrix
         Plot2dData().plot_data_2d(x_matrix, '../resources/results/task11/plotWH.pdf')
+
+        x_matrix = x_matrix.transpose()
+        # exchange first and second columns
+        x_matrix[:, [0, 1]] = x_matrix[:, [1, 0]]
+        Plot2dData().plot_data_2d(x_matrix.transpose(), '../resources/results/task11/plotHW.pdf')
