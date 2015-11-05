@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.stats import norm
 from lib import PlotDataDensity
 
 
