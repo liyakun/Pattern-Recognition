@@ -25,7 +25,6 @@ class Task11:
         ws = np.delete(ws, np.where(ws < 0), None)
 
         x_matrix = np.vstack((ws, hs))
-        print x_matrix
         Plot2dData().plot_data_2d(x_matrix, '../results/task11/plotWH.pdf')
 
         x_matrix = x_matrix.transpose()

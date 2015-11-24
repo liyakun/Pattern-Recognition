@@ -4,7 +4,7 @@ from itertools import chain
 
 
 class Task13:
-    """Implement the task 1.2
+    """Implement the task 1.3
     """
 
     def __init__(self):
