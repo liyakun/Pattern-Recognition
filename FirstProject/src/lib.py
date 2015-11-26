@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from numpy import linspace, vstack, zeros, sqrt, arange, power
+from numpy import linspace, vstack, zeros, arange, power, abs
 from scipy.stats import norm
 
 
@@ -86,8 +86,8 @@ class PlotCircle:
 
     def plot_circle(self, filename, p_value):
         x = arange(-1.0, 1.0, 0.0000001)
-        y_1 = power((1 - power(x, float(p_value))), 1/float(p_value))
-        y_2 = -power((1 - power(x, float(p_value))), 1/float(p_value))
+        y_1 = power((1 - power(abs(x), float(p_value))), 1/float(p_value))
+        y_2 = -power((1 - power(abs(x), float(p_value))), 1/float(p_value))
         fig = plt.gcf()
         plt.plot(x, y_1)
         plt.plot(x, y_2)
