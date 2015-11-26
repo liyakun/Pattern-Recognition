@@ -85,10 +85,21 @@ class PlotCircle:
         pass
 
     def plot_circle(self, filename, p_value):
+        """
+        Plot circle by solving the circle function:
+            x^p + y^p = 1
+            y^p = 1 - x^p
+        """
         x = arange(-1.0, 1.0, 0.0000001)
-        y_1 = power((1 - power(abs(x), float(p_value))), 1/float(p_value))
-        y_2 = -power((1 - power(abs(x), float(p_value))), 1/float(p_value))
+        y_1 = power((1 - power(abs(x), p_value)), 1/float(p_value))
+        y_2 = -power((1 - power(abs(x), p_value)), 1/float(p_value))
+
         fig = plt.gcf()
-        plt.plot(x, y_1)
-        plt.plot(x, y_2)
+        title = "p value is: %.2f" % p_value
+        plt.title(title)
+
+        plt.plot(x, y_1, color='blue')
+        plt.plot(x, y_2, color='blue')
+        plt.axhline(0, color='black')
+        plt.axvline(0, color='black')
         fig.savefig(filename)
