@@ -87,8 +87,8 @@ class PlotCircle:
     def plot_circle(self, filename, p_value):
         """
         Plot circle by solving the circle function:
-            x^p + y^p = 1
-            y^p = 1 - x^p
+            |x|^p + |y|^p = 1
+            |y|^p = 1 - |x|^p
         """
         x = arange(-1.0, 1.0, 0.0000001)
         y_1 = power((1 - power(abs(x), p_value)), 1/float(p_value))
