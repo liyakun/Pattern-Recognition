@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from numpy import linspace, vstack, zeros
+from numpy import linspace, vstack, zeros, sqrt, arange, power
 from scipy.stats import norm
 
 
@@ -77,3 +77,18 @@ class PlotDataDensity:
                         bbox_inches='tight', pad_inches=0.1)
 
         plt.close()
+
+
+class PlotCircle:
+
+    def __init__(self):
+        pass
+
+    def plot_circle(self, filename, p_value):
+        x = arange(-1.0, 1.0, 0.0000001)
+        y_1 = power((1 - power(x, float(p_value))), 1/float(p_value))
+        y_2 = -power((1 - power(x, float(p_value))), 1/float(p_value))
+        fig = plt.gcf()
+        plt.plot(x, y_1)
+        plt.plot(x, y_2)
+        fig.savefig(filename)
