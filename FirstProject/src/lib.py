@@ -8,7 +8,7 @@ class Plot2dData:
     def __init__(self):
         pass
 
-    def plot_data_2d(self, X, filename=None):
+    def plot_data_2d(self, X, distribution, filename=None):
         """Create a 2D plot, with legend
         """
         # create a figure and its axes
@@ -17,6 +17,7 @@ class Plot2dData:
 
         # plot the data
         axs.plot(X[0, :], X[1, :], 'ro', label='data')
+        axs.plot(distribution)
 
         # set x and y limits of the plotting area
         x_min = X[0, :].min()

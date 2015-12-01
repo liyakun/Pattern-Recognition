@@ -1,6 +1,6 @@
 import numpy as np
 from lib import Plot2dData
-from math import log,exp
+from math import log, exp
 from scipy import linalg
 
 
@@ -22,32 +22,33 @@ class Task13:
         raw = [d[1] for d in data if d[1] != 0]
         x_raw = [i+1 for i in range(len(raw))]
 
-        #hist->independent observations
-        x  = [k for el in xrange(1,len(raw)+1) for k in [el]*el]
-        hs = [raw[i-1] for i in x]
+        d = [i for idx, value in enumerate(raw) for i in ([x_raw[idx]] * value)]
+        hs = d
+        # hist->independent observations
+        # x = [k for el in xrange(1, len(raw)+1) for k in [el]*el]
+        # hs = [raw[i-1] for i in x]
 
-        N = len(x)
-        epochs = range(10)
-        arr = np.mat([1,1]).T
+        N = len(hs)
+        epochs = range(20)
+        arr = np.mat([1, 1]).T
         for e in epochs:
-            k = arr[0,0]
-            a = arr[1,0]
-            sdatok = sum([pow(d/a,k) for d in hs])
-            sldatok = sum([pow(d/a,k)*log(d/a) for d in hs])
+            k = arr[0, 0]
+            a = arr[1, 0]
+            sdatok = sum([pow(d/a, k) for d in hs])
+            sldatok = sum([pow(d/a, k)*log(d/a) for d in hs])
             dldk = N/k - N*log(a) + sum([log(d) for d in hs]) - sldatok
             dlda = (k/a)*(sdatok-N)
-            d2ldk2 = -N/(k*k) - sum([pow(d/a,k)*pow(log(d/a),2) for d in hs])
+            d2ldk2 = -N/(k*k) - sum([pow(d/a, k)*pow(log(d/a), 2) for d in hs])
             d2lda2 = (k/(a*a))*(N-(k+1)*sdatok)
-            d2ldkda = -N*a+(1/a)*sdatok + (k/a)*sldatok
-            hessian = np.mat([[d2ldk2,d2ldkda],[d2ldkda,d2lda2]])
+            d2ldkda = (1/a)*sdatok + (k/a)*sldatok - N*a
+            hessian = np.mat([[d2ldk2, d2ldkda], [d2ldkda, d2lda2]])
             gr = np.mat([-dldk, -dlda]).T
-            arr = arr + linalg.inv(hessian)*gr
+            arr = arr + np.dot(linalg.inv(hessian), gr)
 
+        # scaled distribution
+        distribution = [190 / (3000 * (k/a * pow(el/a, k-1) * (exp(-pow(el/a, k))))) for el in raw]
+        # distribution = [k/a * pow(el/a, k-1) * (exp(-pow(el/a, k))) for el in x_raw]
 
-        distribution = [k/a * pow(el/a, k-1) * (exp(-pow(el/a, k))) for el in x_raw]
         # plot and write to disk
-        x_matrix = np.vstack((x_raw, distribution))
-        Plot2dData().plot_data_2d(x_matrix, '../results/task13/plotQueries.pdf')
-
-
-
+        x_matrix = np.vstack((x_raw, raw))
+        Plot2dData().plot_data_2d(x_matrix, distribution, '../results/task13/plotQueries.pdf')
