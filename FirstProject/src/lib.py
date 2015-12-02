@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
-from numpy import linspace, vstack, zeros, arange, power, abs
+from mpl_toolkits.mplot3d import Axes3D
+from numpy import linspace, vstack, zeros, arange, power, abs, meshgrid, array, ravel
+from matplotlib import cm
 from scipy.stats import norm
 
 
@@ -104,3 +106,34 @@ class PlotCircle:
         plt.axhline(0, color='black')
         plt.axvline(0, color='black')
         fig.savefig(filename)
+
+
+class PlotAitchison:
+
+    def __init__(self):
+        pass
+
+    def plot_circle(self):
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+
+        x = y = X = Y = Z = arange(0, 1, 0.1)
+
+        ax.set_zlim(0, 1)
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+
+        #Z = array([(1 - x - y) for x, y in zip(ravel(X), ravel(Y)) if (1 - x - y) > 0])
+        #surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
+        #               linewidth=0, antialiased=False)
+        #Z = zs.reshape(X.shape)
+
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
+        cset = ax.contour(X, Y, Z, cmap=cm.coolwarm)
+        ax.clabel(cset, fontsize=9, inline=1)
+
+        #ax.plot_surface(X, Y, Z)
+        #ax.plot(X, Y, Z, '-b')
+        plt.show()
