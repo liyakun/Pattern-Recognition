@@ -1,4 +1,4 @@
-from lib import PlotAitchison
+from lib import PlotCircle
 import numpy as np
 
 class Bonus:
@@ -10,7 +10,7 @@ class Bonus:
         return v_x / sum(v_x)
 
     # circle mutiply
-    def cal_powering(self, a, v_x):
+    def cal_powering(self, v_x,a):
         return self.cal_closure([np.power(x, a) for x in v_x])
 
     # circle plus
@@ -31,4 +31,4 @@ class Bonus:
 
 
     def bonus(self):
-        PlotAitchison().plot_circle()
+        PlotCircle().plot_circle_ai('../results/bonus/circle.pdf', 2)
