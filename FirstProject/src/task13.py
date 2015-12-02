@@ -2,7 +2,6 @@ import numpy as np
 from lib import Plot2dData
 from math import log, exp
 from scipy import linalg
-import matplotlib.pyplot as plt
 
 class Task13:
     """Implement the task 1.3
@@ -22,9 +21,8 @@ class Task13:
         raw = [d[1] for d in data if d[1] != 0]
         x_raw = [i+1 for i in range(len(raw))]
 
-        d = [i for idx, value in enumerate(raw) for i in ([x_raw[idx]] * value)]
-        hs = d
         # hist->independent observations
+        hs = [i for idx, value in enumerate(raw) for i in ([x_raw[idx]] * value)]
 
         N = len(hs)
         epochs = range(20)
@@ -32,19 +30,23 @@ class Task13:
         for e in epochs:
             k = arr[0, 0]
             a = arr[1, 0]
+
             sdatok = sum([pow(d/a, k) for d in hs])
             sldatok = sum([pow(d/a, k)*log(d/a) for d in hs])
+
             dldk = N/k - N*log(a) + sum([log(d) for d in hs]) - sldatok
             dlda = (k/a)*(sdatok-N)
+
             d2ldk2 = -N/(k*k) - sum([pow(d/a, k)*pow(log(d/a), 2) for d in hs])
             d2lda2 = (k/(a*a))*(N-(k+1)*sdatok)
+
             d2ldkda = (1/a)*sdatok + (k/a)*sldatok - N/a
+
             hessian = np.mat([[d2ldk2, d2ldkda], [d2ldkda, d2lda2]])
             gr = np.mat([-dldk, -dlda]).T
             arr = arr + np.dot(linalg.inv(hessian), gr)
-        print(arr)
 
-        # scaled distribution
+        #distribution scaled by N
         distribution = [(N*(k/a * pow(el/a, k-1) * (exp(-pow(el/a, k))))) for el in x_raw]
 
         # plot and write to disk
