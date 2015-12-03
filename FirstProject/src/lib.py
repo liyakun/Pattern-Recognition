@@ -114,20 +114,23 @@ class PlotCircle:
             |x|^p + |y|^p = 1
             |y|^p = 1 - |x|^p
         """
-        x = arange(-1.0, 1.0, 0.1)
-        y_1 = bonus.Bonus().cal_powering((1 - bonus.Bonus().cal_powering(abs(x), p_value)), 1/float(p_value))
-        y_2 = -y_1
 
-        fig = plt.gcf()
-        title = "p value is: %.2f" % p_value
-        plt.title(title)
 
-        plt.plot(x, y_1, color='blue')
-        plt.plot(x, y_2, color='blue')
-        plt.axhline(0, color='black')
-        plt.axvline(0, color='black')
+        STEP = 0.01
+        x = y = arange(STEP, 1.0, STEP)
+        points = [(a, b, 1 - a - b) for a in x for b in y if (a+b)<1]
+        p = [el for el in points if abs(bonus.Bonus().cal_distance(el, (1/3, 1/3, 1/3))) - 1 < 0.001]
+
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        for x,y,z in p:
+            ax.scatter(x, y, z)
+
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        ax.set_zlabel('Z Label')
         fig.savefig(filename)
-
 
 class PlotAitchison:
 
@@ -138,7 +141,7 @@ class PlotAitchison:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
 
-        x = y = X = Y = Z = arange(0, 1, 0.1)
+        x = y = X = Y = Z = arange(0, 1, 0.001)
 
         ax.set_zlim(0, 1)
         ax.set_xlim(0, 1)
