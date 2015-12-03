@@ -1,6 +1,7 @@
 from lib import PlotCircle
 import numpy as np
 
+
 class Bonus:
 
     def __int__(self):

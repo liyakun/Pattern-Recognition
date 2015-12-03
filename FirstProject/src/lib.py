@@ -110,54 +110,28 @@ class PlotCircle:
 
     def plot_circle_ai(self, filename, p_value):
         """
-        Plot circle by solving the circle function:
-            |x|^p + |y|^p = 1
-            |y|^p = 1 - |x|^p
         """
-
 
         STEP = 0.01
         x = y = arange(STEP, 1.0, STEP)
-        points = [(a, b, 1 - a - b) for a in x for b in y if (a+b)<1]
+        points = [(a, b, 1 - a - b) for a in x for b in y if (a+b) < 1]
         p = [el for el in points if abs(bonus.Bonus().cal_distance(el, (1/3, 1/3, 1/3))) - 1 < 0.001]
 
 
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        for x,y,z in p:
-            ax.scatter(x, y, z)
+        # ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111)
+
+        for x, y, z in points:
+            # ax.scatter(x, y, z)
+            ax.scatter(x, y)
+
+        for x, y, z in p:
+            ax.scatter(x, y, color='red')
+            # ax.scatter(x, y, z, color='red')
 
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
-        ax.set_zlabel('Z Label')
-        fig.savefig(filename)
-
-class PlotAitchison:
-
-    def __init__(self):
-        pass
-
-    def plot_circle(self):
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-
-        x = y = X = Y = Z = arange(0, 1, 0.001)
-
-        ax.set_zlim(0, 1)
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-
-        #Z = array([(1 - x - y) for x, y in zip(ravel(X), ravel(Y)) if (1 - x - y) > 0])
-        #surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
-        #               linewidth=0, antialiased=False)
-        #Z = zs.reshape(X.shape)
-
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
-        cset = ax.contour(X, Y, Z, cmap=cm.coolwarm)
-        ax.clabel(cset, fontsize=9, inline=1)
-
-        #ax.plot_surface(X, Y, Z)
-        #ax.plot(X, Y, Z, '-b')
+        # ax.set_zlabel('Z Label')
         plt.show()
+        # fig.savefig(filename)
