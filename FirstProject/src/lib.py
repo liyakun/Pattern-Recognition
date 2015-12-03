@@ -133,5 +133,4 @@ class PlotCircle:
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
         # ax.set_zlabel('Z Label')
-        plt.show()
-        # fig.savefig(filename)
+        fig.savefig(filename)
