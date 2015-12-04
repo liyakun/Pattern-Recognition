@@ -3,6 +3,7 @@ from lib import Plot2dData
 from math import log, exp
 from scipy import linalg
 
+
 class Task13:
     """Implement the task 1.3
     """
@@ -51,4 +52,4 @@ class Task13:
 
         # plot and write to disk
         x_matrix = np.vstack((x_raw, raw))
-        Plot2dData().plot_data_2d(x_matrix, distribution, '../results/task13/plotQueries.pdf')
+        Plot2dData().plot_data_2d(x_matrix, '3', distribution, '../results/task13/plotQueries.pdf')

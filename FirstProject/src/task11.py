@@ -25,9 +25,9 @@ class Task11:
         ws = np.delete(ws, np.where(ws < 0), None)
 
         x_matrix = np.vstack((ws, hs))
-        Plot2dData().plot_data_2d(x_matrix, '../results/task11/plotWH.pdf')
+        Plot2dData().plot_data_2d(x_matrix, '1', '', '../results/task11/plotWH.pdf')
 
         x_matrix = x_matrix.transpose()
         # exchange first and second columns
         x_matrix[:, [0, 1]] = x_matrix[:, [1, 0]]
-        Plot2dData().plot_data_2d(x_matrix.transpose(), '../results/task11/plotHW.pdf')
+        Plot2dData().plot_data_2d(x_matrix.transpose(), '1', '', '../results/task11/plotHW.pdf')

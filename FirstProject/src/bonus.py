@@ -1,8 +1,11 @@
-from lib import PlotCircle
+import lib
 import numpy as np
 
 
 class Bonus:
+    """
+    implement the bonus task
+    """
 
     def __int__(self):
         pass
@@ -31,4 +34,4 @@ class Bonus:
         return self.cal_norm(self.cal_minus(v_x, v_y))
 
     def bonus(self):
-        PlotCircle().plot_circle_ai('../results/bonus/circle.pdf', 2)
+        lib.PlotCircle().plot_circle_ai('../results/bonus/circle.pdf', 2)

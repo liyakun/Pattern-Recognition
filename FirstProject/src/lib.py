@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from numpy import linspace, vstack, zeros, arange, power, abs, meshgrid, array, ravel
-from matplotlib import cm
+from numpy import linspace, vstack, zeros, arange, power, abs
 from scipy.stats import norm
 import bonus
 
@@ -11,16 +9,21 @@ class Plot2dData:
     def __init__(self):
         pass
 
-    def plot_data_2d(self, X, distribution, filename=None):
+    def plot_data_2d(self, X, task, distribution, filename=None):
         """Create a 2D plot, with legend
         """
+
         # create a figure and its axes
         fig = plt.figure()
         axs = fig.add_subplot(111)
 
-        # plot the data
-        axs.plot(X[0, :], X[1, :], 'ro', label='data')
-        axs.plot(distribution)
+        if task == str(3):
+            axs.plot(X[0, :], X[1, :], 'k-', label='data')
+            axs.plot(distribution, color='red')
+        elif task == str(1):
+            axs.plot(X[0, :], X[1, :], 'ro', label='data')
+        else:
+            raise ValueError('The value of "task" should be 1 or 3.')
 
         # set x and y limits of the plotting area
         x_min = X[0, :].min()
@@ -89,8 +92,7 @@ class PlotCircle:
         pass
 
     def plot_circle(self, filename, p_value):
-        """
-        Plot circle by solving the circle function:
+        """Plot circle by solving the circle function:
             |x|^p + |y|^p = 1
             |y|^p = 1 - |x|^p
         """
@@ -107,6 +109,7 @@ class PlotCircle:
         plt.axhline(0, color='black')
         plt.axvline(0, color='black')
         fig.savefig(filename)
+
 
     def plot_circle_ai(self, filename, p_value):
         """
