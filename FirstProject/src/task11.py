@@ -21,8 +21,8 @@ class Task11:
         hs = np.array([d[1] for d in data])
 
         # remove data with negative value
-        hs = np.delete(hs, np.where(ws < 0), None)
-        ws = np.delete(ws, np.where(ws < 0), None)
+        # hs = np.delete(hs, np.where(ws < 0), None)
+        # ws = np.delete(ws, np.where(ws < 0), None)
 
         x_matrix = np.vstack((ws, hs))
         Plot2dData().plot_data_2d(x_matrix, '1', '', '../results/task11/plotWH.pdf')

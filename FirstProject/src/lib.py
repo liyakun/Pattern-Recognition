@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from numpy import linspace, vstack, zeros, arange, power, abs
+from mpl_toolkits.mplot3d import axes3d
 from scipy.stats import norm
 import bonus
 
@@ -98,7 +99,7 @@ class PlotCircle:
         """
         x = arange(-1.0, 1.0, 0.0000001)
         y_1 = power((1 - power(abs(x), p_value)), 1/float(p_value))
-        y_2 = -power((1 - power(abs(x), p_value)), 1/float(p_value))
+        y_2 = -y_1
 
         fig = plt.gcf()
         title = "p value is: %.2f" % p_value
@@ -112,28 +113,31 @@ class PlotCircle:
 
 
     def plot_circle_ai(self, filename, p_value):
-        """
-        """
 
         STEP = 0.01
-        x = y = arange(STEP, 1.0, STEP)
-        points = [(a, b, 1 - a - b) for a in x for b in y if (a+b) < 1]
-        p = [el for el in points if abs(bonus.Bonus().cal_distance(el, (1/3, 1/3, 1/3))) - 1 < 0.001]
-
+        x = y = arange(0, 1.0, STEP)
+        points = [(a, b, 1 - a - b) for a in x for b in y if (a + b) - 1 < 0.0001]
+        p = [el for el in points if (bonus.Bonus().cal_distance(el, (1.0/3.0, 1.0/3.0, 1.0/3.0))) - 1 < 0.00001]
 
         fig = plt.figure()
-        # ax = fig.add_subplot(111, projection='3d')
-        ax = fig.add_subplot(111)
+        ax = fig.add_subplot(111, projection='3d')
+        # ax = fig.add_subplot(111)
 
+        points = [(x, y, z) for x, y, z in points if (x < 0.0001 or y < 0.0001 or z < 0.0001)]
         for x, y, z in points:
-            # ax.scatter(x, y, z)
-            ax.scatter(x, y)
+            ax.scatter(x, y, z)
+            #ax.scatter(x, y)
 
         for x, y, z in p:
-            ax.scatter(x, y, color='red')
-            # ax.scatter(x, y, z, color='red')
+            # ax.scatter(x, y, color='red')
+          ax.scatter(x, y, z, color='red')
+
+        ax.set_xlim([0, 1])
+        ax.set_ylim([0, 1])
+        ax.set_zlim([0, 1])
 
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
-        # ax.set_zlabel('Z Label')
-        fig.savefig(filename)
+        ax.set_zlabel('Z Label')
+        plt.show()
+        # fig.savefig(filename)

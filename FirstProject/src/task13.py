@@ -29,7 +29,6 @@ class Task13:
         for e in epochs:
             k = arr[0, 0]
             a = arr[1, 0]
-            print k, a
 
             sldatok = sum([h * np.power((x / a), k) * log(x / a) for h, x in zip(raw, x_raw)])
             sdatok = sum([h * np.power((x / a), k) for h, x in zip(raw, x_raw)])
@@ -75,12 +74,9 @@ class Task13:
         for e in epochs:
             k = arr[0, 0]
             a = arr[1, 0]
-            print sum([log(d) for d in hs])
 
             sdatok = sum([pow(d/a, k) for d in hs])
             sldatok = sum([pow(d/a, k)*log(d/a) for d in hs])
-
-            print sdatok, sldatok
 
             dldk = N/k - N*log(a) + sum([log(d) for d in hs]) - sldatok
             dlda = (k/a)*(sdatok-N)
