@@ -2,7 +2,9 @@ import matplotlib.pyplot as plt
 from numpy import linspace, vstack, zeros, arange, power, abs
 from mpl_toolkits.mplot3d import axes3d
 from scipy.stats import norm
+import numpy as np
 import bonus
+import random
 
 
 class Plot2dData:
@@ -112,6 +114,7 @@ class PlotCircle:
         fig.savefig(filename)
 
 
+
     def plot_circle_ai(self, filename, p_value):
 
         STEP = 0.01
@@ -139,5 +142,37 @@ class PlotCircle:
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
         ax.set_zlabel('Z Label')
+        plt.show()
+        # fig.savefig(filename)
+
+
+    def plot_circle_ai_new(self, filename, p_value):
+
+        STEP = 0.01
+        x = y = z = arange(0, 1.1, STEP)
+        # get the whole vector space
+        points = [(a, b, c) for a in x for b in y for c in z if (a + b + c == 1) and a != 0 and b != 0 and c != 0]
+        norm_points = [bonus.Bonus().cal_norm(el) for el in points]
+        power_points = np.array([bonus.Bonus().cal_powering(point, 1/el) for point, el in zip(points, norm_points)])
+
+        fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111)
+
+        for x, y, z in points:
+            # ax.scatter(x, y, z)
+            ax.scatter(x, y)    # project to 2d
+
+        for x, y, z in power_points:
+            ax.scatter(x, y, color='red')   # project to 2d
+            # ax.scatter(x, y, z, color='red')
+
+        ax.set_xlim([0, 1])
+        ax.set_ylim([0, 1])
+        # ax.set_zlim([0, 1])
+
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        # ax.set_zlabel('Z Label')
         plt.show()
         # fig.savefig(filename)
