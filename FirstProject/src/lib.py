@@ -146,33 +146,35 @@ class PlotCircle:
         # fig.savefig(filename)
 
 
+
     def plot_circle_ai_new(self, filename, p_value):
 
         STEP = 0.01
-        x = y = z = arange(0, 1.1, STEP)
-        # get the whole vector space
-        points = [(a, b, c) for a in x for b in y for c in z if (a + b + c == 1) and a != 0 and b != 0 and c != 0]
-        norm_points = [bonus.Bonus().cal_norm(el) for el in points]
-        power_points = np.array([bonus.Bonus().cal_powering(point, 1/el) for point, el in zip(points, norm_points)])
+        x = y = z = arange(0.0, 1.0, STEP)
+        points = [(a, b, c) for a in x for b in y for c in z if (a + b + c == 1) and a > 0 and b > 0 and c > 0]
+        circle_points = [el for el in points if abs(bonus.Bonus().cal_distance(el, (1.0/3.0, 1.0/3.0, 1.0/3.0)) - 3) <
+                         0.2]
 
         fig = plt.figure()
-        # ax = fig.add_subplot(111, projection='3d')
-        ax = fig.add_subplot(111)
+        ax = fig.add_subplot(111, projection='3d')
+        #ax = fig.add_subplot(111)
+
+        points = random.sample(points, 500)
 
         for x, y, z in points:
-            # ax.scatter(x, y, z)
-            ax.scatter(x, y)    # project to 2d
+            ax.scatter(x, y, z)
+            #ax.scatter(x, y)    # project to 2d
 
-        for x, y, z in power_points:
-            ax.scatter(x, y, color='red')   # project to 2d
-            # ax.scatter(x, y, z, color='red')
+        for x, y, z in circle_points:
+            # ax.scatter(x, y, color='red')   # project to 2d
+            ax.scatter(x, y, z, color='red')
 
         ax.set_xlim([0, 1])
         ax.set_ylim([0, 1])
-        # ax.set_zlim([0, 1])
+        ax.set_zlim([0, 1])
 
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
-        # ax.set_zlabel('Z Label')
+        ax.set_zlabel('Z Label')
         plt.show()
         # fig.savefig(filename)
