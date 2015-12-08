@@ -5,6 +5,7 @@ import numpy as np
 class Bonus:
     """
     implement the bonus task
+    common operations in Aitchison geometry here
     """
 
     def __int__(self):
