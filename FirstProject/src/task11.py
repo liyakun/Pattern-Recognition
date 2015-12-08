@@ -24,6 +24,7 @@ class Task11:
         hs = np.delete(hs, np.where(ws < 0), None)
         ws = np.delete(ws, np.where(ws < 0), None)
 
+        # create a matrix based on ws and hs, with ws against hs
         x_matrix = np.vstack((ws, hs))
         Plot2dData().plot_data_2d(x_matrix, '1', '', '../results/task11/plotWH.pdf')
 

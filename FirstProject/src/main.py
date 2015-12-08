@@ -1,3 +1,4 @@
+"""main.py implement all the tasks, using python 2.7"""
 from task11 import Task11
 from task12 import Task12
 from task13 import Task13
@@ -8,5 +9,5 @@ from bonus import Bonus
 Task11().read_and_plot()
 Task12().read_and_plot()
 Task13().read_and_plot_opt()
-Task14().plot_circle(0.5)
+Task14().plot_circle(2)
 Bonus().bonus()
