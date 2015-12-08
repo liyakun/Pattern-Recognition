@@ -19,8 +19,9 @@ class Bonus:
 
     def cal_inner_product(self, v_x, v_y):
         length = len(v_x)
-        return 1.0 / (2.0 * length) * sum([np.log(v_x[i]/v_x[j]) * np.log(v_y[i]/v_y[j]) for i in range(length) for j in
-                                           range(length)])
+        ran = range(length)
+        return 1.0 / (2.0 * length) * sum([np.log(v_x[i]/v_x[j]) * np.log(v_y[i]/v_y[j]) for i in ran for j in
+                                           ran])
 
     def cal_norm(self, v_x):
         return np.sqrt(self.cal_inner_product(v_x, v_x))
