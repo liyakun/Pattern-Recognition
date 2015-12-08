@@ -36,4 +36,4 @@ class Bonus:
         return self.cal_norm(self.cal_minus(v_x, v_y))
 
     def bonus(self):
-        lib.PlotCircle().plot_circle_ai_new('../results/bonus/circle.pdf', 2)
+        lib.PlotCircle().plot_circle_ai('../results/bonus/circle.pdf', 2)

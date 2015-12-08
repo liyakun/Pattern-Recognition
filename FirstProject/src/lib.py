@@ -114,40 +114,7 @@ class PlotCircle:
         fig.savefig(filename)
 
 
-
     def plot_circle_ai(self, filename, p_value):
-
-        STEP = 0.01
-        x = y = arange(0, 1.0, STEP)
-        points = [(a, b, 1 - a - b) for a in x for b in y if (a + b) - 1 < 0.0001]
-        p = [el for el in points if (bonus.Bonus().cal_distance(el, (1.0/3.0, 1.0/3.0, 1.0/3.0))) - 1 < 0.00001]
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        # ax = fig.add_subplot(111)
-
-        points = [(x, y, z) for x, y, z in points if (x < 0.0001 or y < 0.0001 or z < 0.0001)]
-        for x, y, z in points:
-            ax.scatter(x, y, z)
-            #ax.scatter(x, y)
-
-        for x, y, z in p:
-            # ax.scatter(x, y, color='red')
-          ax.scatter(x, y, z, color='red')
-
-        ax.set_xlim([0, 1])
-        ax.set_ylim([0, 1])
-        ax.set_zlim([0, 1])
-
-        ax.set_xlabel('X Label')
-        ax.set_ylabel('Y Label')
-        ax.set_zlabel('Z Label')
-        plt.show()
-        # fig.savefig(filename)
-
-
-
-    def plot_circle_ai_new(self, filename, p_value):
 
         STEP = 0.01
         x = y = z = arange(0.0, 1.0, STEP)

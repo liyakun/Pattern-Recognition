@@ -11,6 +11,7 @@ class Task13:
     def __init__(self):
         pass
 
+
     def read_and_plot_opt(self):
         """
         read weight, height and gender information from file, and plot weight against height
