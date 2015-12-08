@@ -8,5 +8,5 @@ from bonus import Bonus
 Task11().read_and_plot()
 Task12().read_and_plot()
 Task13().read_and_plot_opt()
-Task14().plot_circle(1)
+Task14().plot_circle(0.5)
 Bonus().bonus()
