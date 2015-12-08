@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 from numpy import linspace, vstack, zeros, arange, power, abs
-from mpl_toolkits.mplot3d import axes3d
 from scipy.stats import norm
-import numpy as np
 import bonus
 import random
 
@@ -143,5 +141,4 @@ class PlotCircle:
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
         ax.set_zlabel('Z Label')
-        plt.show()
-        # fig.savefig(filename)
+        fig.savefig(filename)
