@@ -44,6 +44,15 @@ class Plot2dData:
         if filename is None:
             plt.show()
         else:
+            if 'HW' in filename:
+                plt.xlabel('Height(m)')
+                plt.ylabel('Weight(kg)')
+            elif 'WH' in filename:
+                plt.xlabel('Weight(kg)')
+                plt.ylabel('Height(m)')
+            else:
+                plt.xlabel('Observations')
+                plt.ylabel('H')
             plt.savefig(filename, facecolor='w', edgecolor='w',
                         papertype=None, format='pdf', transparent=False,
                         bbox_inches='tight', pad_inches=0.1)
@@ -88,6 +97,8 @@ class PlotDataDensity:
         if filename is None:
             fig1.show()
         else:
+            plt.xlabel('Height(m)')
+            plt.ylabel('Distribution')
             fig1.savefig(filename, facecolor='w', edgecolor='w',
                         papertype=None, format='pdf', transparent=False,
                         bbox_inches='tight', pad_inches=0.1)
