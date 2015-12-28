@@ -34,7 +34,6 @@ pos = np.empty(x.shape + (2,))
 pos[:, :, 0] = x
 pos[:, :, 1] = y
 rv = multivariate_normal.pdf(pos, joint_mean, joint_cov)
-print rv.shape
 ax2.contour(x, y, rv)
 X = np.vstack((hs, ws))
 Pre = np.vstack((hs_t, exp_w))
