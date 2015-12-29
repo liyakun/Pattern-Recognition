@@ -1,9 +1,9 @@
-import random
 import numpy as np
 from collections import namedtuple
 from operator import itemgetter
 from pprint import pformat
 import matplotlib.pyplot as plt
+
 
 class Node(namedtuple('Node', 'location left_child right_child')):
     def __repr__(self):
@@ -11,6 +11,7 @@ class Node(namedtuple('Node', 'location left_child right_child')):
 
 # line width for visualization of K-D tree
 line_width = [4., 3.5, 3., 2.5, 2., 1.5, 1., .5, 0.3]
+
 
 def plot_tree(tree, min_x, max_x, min_y, max_y, prev_node, branch, depth=0):
     """ plot K-D tree
@@ -72,73 +73,82 @@ def plot_tree(tree, min_x, max_x, min_y, max_y, prev_node, branch, depth=0):
     if right_branch is not None:
         plot_tree(right_branch, min_x, max_x, min_y, max_y, cur_node, False, depth+1)
 
-def get_data_list():
+
+def get_data_list(option):
     dt = np.dtype([('x1', np.float), ('x2', np.float), ('y',  np.float)])
     data = np.loadtxt('./data2-train.dat', dtype=dt, comments='#', delimiter=None)
     Xtr,ytr = np.array([[el[0],el[1]] for el in data]),data['y']
+    if option == 'x':
+        pass
+    elif option == 'y':
+        Xtr[:,[0, 1]] = Xtr[:,[1, 0]]
+    elif option == 'variance':
+        if np.var(np.array(data['x1'])) < np.var(np.array(data['x2'])):
+            Xtr[:,[0, 1]] = Xtr[:,[1, 0]]
+    else:
+        raise ValueError('dimension for splitting should be "x", "y" or "variance".')
+
     nested_lst_of_tuples = [tuple(l) for l in Xtr]
     return nested_lst_of_tuples
 
-def generate_point_list(n, min_val, max_val):
-    """ generate a list of random points
-    :param n        number of points
-    :param min_val  minimal value
-    :return max_val maximal value
-    """
 
-    p = []
-
-    for i in range(n):
-
-        # coordinates as integer values
-        p.append((random.randint(min_val,max_val),
-                  random.randint(min_val,max_val)))
-
-        # coordinates as float values
-        #p.append((np.random.normal(random.randint(min_val,max_val), scale=0.5),
-        #          np.random.normal(random.randint(min_val,max_val), scale=0.5)))
-    print p
-    return p
-
-def kdtree(point_list, depth=0):
+def kdtree(point_list, pivot, depth=0):
     try:
         k = len(point_list[0]) # assumes all points have the same dimension
     except IndexError as e: # if not point_list:
         return None
+
     # Select axis based on depth so that axis cycles through all valid values
     axis = depth % k
 
-    # Sort point list and choose median as pivot element
+    # Sort point list
     point_list.sort(key=itemgetter(axis))
-    median = len(point_list) // 2 # choose median
+
+    # compute median as pivot element
+    median = len(point_list) // 2
+
+    # compute midpoint as pivot element
+    axis_value_list = [pair[axis] for pair in point_list]
+    mean_value = sum(axis_value_list) / float(len(point_list))
+    mean_pos = (np.abs(np.array(axis_value_list)-mean_value)).argmin()
 
     # Create node and construct subtrees
-    return Node(
-        location=point_list[median],
-        left_child=kdtree(point_list[:median], depth + 1),
-        right_child=kdtree(point_list[median + 1:], depth + 1)
-    )
+    if pivot == 'median':
+        return Node(
+            location=point_list[median],
+            left_child=kdtree(point_list[:median], pivot, depth + 1),
+            right_child=kdtree(point_list[median + 1:], pivot, depth + 1)
+        )
+    elif pivot == 'midpoint':
+       return Node(
+            location=point_list[mean_pos],
+            left_child=kdtree(point_list[:mean_pos], pivot, depth + 1),
+            right_child=kdtree(point_list[mean_pos + 1:], pivot, depth + 1)
+        )
+    else:
+        raise ValueError('pivot value should be "median" or "midpoint".')
+
 
 def main():
-    """Example usage"""
-    #min_val = 100
-    #max_val = 300
+
     delta = 1
-    #point_list = generate_point_list(100, 0, 50)
-    point_list = get_data_list()
-    max_val = int(max(map(max, zip(*point_list))))
-    min_val = int(min(map(min, zip(*point_list))))
-    tree = kdtree(point_list)
+
+    # get the point list by specifing the x, y dimension or by variance
+    point_list = get_data_list('x')
+
+    x_max_val, y_max_val = int(map(max, zip(*point_list))[0]), int(map(max, zip(*point_list))[1])
+    x_min_val, y_min_val = int(map(min, zip(*point_list))[0]), int(map(min, zip(*point_list))[1])
+    tree = kdtree(point_list, 'midpoint')
 
     plt.figure("K-d Tree", figsize=(10., 10.))
-    plt.axis( [min_val-delta, max_val+delta, min_val-delta, max_val+delta] )
+    plt.axis( [x_min_val-delta, x_max_val+delta, y_min_val-delta, y_max_val+delta] )
 
     plt.grid(b=True, which='major', color='0.75', linestyle='--')
-    plt.xticks([i for i in range(min_val-delta, max_val+delta, 1)])
-    plt.yticks([i for i in range(min_val-delta, max_val+delta, 1)])
+    plt.xticks([i for i in range(x_min_val-delta, x_max_val+delta, 1)])
+    plt.yticks([i for i in range(y_min_val-delta, y_max_val+delta, 1)])
 
     # draw the tree
-    plot_tree(tree, min_val-delta, max_val+delta, min_val-delta, max_val+delta, None, None)
+    plot_tree(tree, x_min_val-delta, x_max_val+delta, y_min_val-delta, y_max_val+delta, None, None)
 
     plt.title('K-D Tree')
     plt.show()
