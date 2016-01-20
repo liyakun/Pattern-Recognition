@@ -4,7 +4,7 @@ import random
 import sys
 import matplotlib.pyplot as plt
 import math
-
+import time
 
 def calcDistance(center , point):
 	return math.sqrt( (center[0] - point[0])**2 + (center[1] - point[1])**2 )
@@ -68,8 +68,19 @@ def calcMeanOfCenter(centers, index, i ):
 	return centers
 
 
+def determineWinnerCentroid(centers, x):
+	min_dist = sys.float_info.max
+	center_index = 0
+	for i in range( len(centers[:,0]) ):
+		distFromCenterToPoint = calcDistance(centers[i,:], x)
+		if ( distFromCenterToPoint < min_dist ):
+			min_dist = distFromCenterToPoint
+			center_index = i
+
+	return center_index
+
+
 def LIoyds(data, k):
-	print "LIoyds alg"
 	min_val_X = min(data[0,:])
 	min_val_Y = min(data[1,:])
 	max_val_X = max(data[0,:])
@@ -86,10 +97,7 @@ def LIoyds(data, k):
 
 	change = True
 	# loop until there is no change in assignment to clusters
-	iteration_counter = 1
 	while change == True:
-		print "iteration ",iteration_counter
-		iteration_counter += 1
 
 		index = assignPointsToNearestCluster(centers, data)
 
@@ -109,7 +117,6 @@ def LIoyds(data, k):
 
 
 def Hartigan(data , k):
-	print "Hartigan alg"
 	min_val_X = min(data[0,:])
 	min_val_Y = min(data[1,:])
 	max_val_X = max(data[0,:])
@@ -130,10 +137,7 @@ def Hartigan(data , k):
 
 	change = True
 	# loop until there is no change in assignment to clusters
-	iteration_counter = 1
 	while change == True:
-		print "iteration ",iteration_counter
-		iteration_counter +=1
 
 		change = False
 		for j in range( len(data[0,:]) ):
@@ -161,30 +165,94 @@ def Hartigan(data , k):
 
 
 
+def MacQueen(data , k):
+	min_val_X = min(data[0,:])
+	min_val_Y = min(data[1,:])
+	max_val_X = max(data[0,:])
+	max_val_Y = max(data[1,:])
+	
+	# initialize centers
+	centers = np.zeros((k, 2), np.float64 )
+	for i in range(k):
+		centers[i,0] = random.uniform( min_val_X , max_val_X )
+		centers[i,1] = random.uniform( min_val_Y , max_val_Y )
 
-def plotData( data , indexes , centers , str ):
-	plt.title(str)
+	n = 0
+	for j in range( len(data[0,:]) ):
+		center_index = determineWinnerCentroid(centers , data[:,j])
+		n += 1
+		centers[center_index,:] += 1/float(n)*( data[:,j] - centers[center_index,:])  
+
+	index = assignPointsToNearestCluster(centers , data)
+
+	return index, centers	
+
+
+
+
+
+def plotData( data , indexes , centers , str, axs):
 	
 	bool_idx = (indexes == 0)
-	plt.scatter(data[0,bool_idx], data[1,bool_idx], color='red')
-	plt.scatter(centers[0,0], centers[0,1], s=100 , color='red', edgecolors='black')
+	axs.scatter(data[0,bool_idx], data[1,bool_idx], color='red')
+	axs.scatter(centers[0,0], centers[0,1], s=100 , color='red', edgecolors='black')
 
 	bool_idx = (indexes == 1)
-	plt.scatter(data[0,bool_idx], data[1,bool_idx], color='orange')
-	plt.scatter(centers[1,0], centers[1,1], s=100 , color='orange', edgecolors='black')
+	axs.scatter(data[0,bool_idx], data[1,bool_idx], color='orange')
+	axs.scatter(centers[1,0], centers[1,1], s=100 , color='orange', edgecolors='black')
 
 	bool_idx = (indexes == 2)
-	plt.scatter(data[0,bool_idx], data[1,bool_idx], color='green')
-	plt.scatter(centers[2,0], centers[2,1], s=100 , color='green', edgecolors='black')
-	plt.show()
+	axs.scatter(data[0,bool_idx], data[1,bool_idx], color='green')
+	axs.scatter(centers[2,0], centers[2,1], s=100 , color='green', edgecolors='black')
+
+	axs.set_title(str)
+	return axs
 
 
+def measureAlgRunTimes(data):
+	start = time.time()
+	for i in range(10):
+		[indexes, centers] = LIoyds(data , 3)
+	end = time.time()
+	avg_time = (end - start)/10.0
+
+	print "LIoyds algorithm average time:   ",avg_time
+
+	start = time.time()
+	for i in range(10):
+		[indexes, centers] = Hartigan(data , 3)
+	end = time.time()
+	avg_time = (end - start)/10.0
+
+	print "Hartigan algorithm average time:   ",avg_time
+
+	start = time.time()
+	for i in range(10):
+		[indexes, centers] = MacQueen(data , 3)
+	end = time.time()
+	avg_time = (end - start)/10.0
+
+	print "MacQueen algorithm average time:   ",avg_time
 
 
 data = np.loadtxt('resources/data-clustering-1.csv', None, comments='#', delimiter=',')
 
+fig = plt.figure()
+axs1 = fig.add_subplot(131)
+axs2 = fig.add_subplot(132)
+axs3 = fig.add_subplot(133)
+
 [indexes, centers] = LIoyds(data , 3)
-plotData(data,indexes,centers, "LIoyds")
+axs1 = plotData(data,indexes,centers, "LIoyds" , axs1)
 
 [indexes, centers] = Hartigan(data , 3)
-plotData(data,indexes,centers, "Hartigan")
+axs2 = plotData(data,indexes,centers, "Hartigan", axs2)
+
+[indexes, centers] = MacQueen(data , 3)
+axs3 = plotData(data,indexes,centers, "MacQueen", axs3)
+
+plt.show()
+
+measureAlgRunTimes(data)
+
+
