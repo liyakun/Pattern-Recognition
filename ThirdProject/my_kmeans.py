@@ -1,5 +1,4 @@
 import numpy as np
-import scipy, scipy.spatial
 import random
 import sys
 import matplotlib.pyplot as plt
