@@ -37,14 +37,15 @@ def assignPointsToNearestCluster(centers, data):
     return index
 
 
-def calculateObjectiveFunction(centers, data, index):
-    error = 0.0
-    for i in range(len(data[0, :])):
-        for j in range(len(centers[:, 0])):
-            if index[i] == j:
-                error += calcDistance(centers[j, :], data[:, i])
+def calculateObjectiveFunction(centers, data, index, j, i):
+    #error = 0.0
+    #for i in range(len(data[0, :])):
+    #    for j in range(len(centers[:, 0])):
+    #        if index[i] == j:
+    #            error += calcDistance(centers[j, :], data[:, i])
+    return calcDistance(centers[j, :], data[:, i])
 
-    return error
+    #return error
 
 
 def calcMeanOfCenter(centers, index, i):
@@ -65,6 +66,12 @@ def calcMeanOfCenter(centers, index, i):
 
     return centers
 
+def calNumOfCenter(index, i):
+    count = 0
+    for j in range(len(index)):
+        if index[j] == i:
+            ++count
+    return count
 
 def determineWinnerCentroid(centers, x):
     min_dist = sys.float_info.max
@@ -124,19 +131,25 @@ def Hartigan(data, k):
     for i in range(0, k):
         centers = calcMeanOfCenter(centers, index, i)
 
+    # compute object function result for each cluster
+    # object_result = [calculateObjectiveFunction(centers, data, index)]
+
     converged = False
     # loop until there is no change in assignment to clusters
     while converged is False:
         for j in range(len(data[0, :])):
             init_center = index[j]  # get center i of point j
+            size = calNumOfCenter(index, init_center)
             index[j] = -1  # remove point j from center
-            centers = calcMeanOfCenter(centers, index, init_center)  # recalculate mean for center i
-
+            centers[init_center, 0] * size - data[:, j][0]/ (size-1)
+            centers[init_center, 1] * size - data[:, j][1]/ (size-1)
+            #centers = calcMeanOfCenter(centers, index, init_center)  # recalculate mean for center i
             min_error = sys.float_info.max
             proper_cluster = -1
+
             for i in range(k):
                 index[j] = i  # assign point j to cluster i
-                objFunResult = calculateObjectiveFunction(centers, data, index)
+                objFunResult = calculateObjectiveFunction(centers, data, index, i, j)
                 if min_error > objFunResult:
                     min_error = objFunResult
                     proper_cluster = i
@@ -145,7 +158,10 @@ def Hartigan(data, k):
                 converged = True  # continue iterations
 
             index[j] = proper_cluster  # assign point to cluster for which objective function is the lowest
-            centers = calcMeanOfCenter(centers, index, proper_cluster)  # recalculate mean for center i
+            size = calNumOfCenter(index, proper_cluster)
+            centers[proper_cluster, 0] * size + data[:, j][0]/ (size+1)
+            centers[proper_cluster, 1] * size + data[:, j][1]/ (size+1)
+            #centers = calcMeanOfCenter(centers, index, proper_cluster)  # recalculate mean for center i
 
     return index, centers
 
