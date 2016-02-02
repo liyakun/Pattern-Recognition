@@ -57,8 +57,8 @@ def calcMeanOfCenter(centers, index, i):
 
     for j in range(len(index)):  # loop over all indexes of points
         if index[j] == i:  # if point is assigned to center add it
-            centers[i, 0] = centers[i, 0] + data[0, i]
-            centers[i, 1] = centers[i, 1] + data[1, i]
+            centers[i, 0] = centers[i, 0] + data[0, j]
+            centers[i, 1] = centers[i, 1] + data[1, j]
 
     if num_of_points_in_cluster != 0:
         centers[i, 0] /= float(num_of_points_in_cluster)
@@ -120,7 +120,6 @@ def LIoyds(data, k):
 
 
 def Hartigan(data, k):
-
     # initialize centers
     centers = np.zeros((k, 2), np.float64)
 
@@ -142,10 +141,9 @@ def Hartigan(data, k):
         for j in range(len(data[0, :])):
             init_center = index[j]  # get center i of point j
             size = sum(index == init_center)
-            #size = calNumOfCenter(index, init_center)
             index[j] = -1  # remove point j from center
-            centers[init_center, 0] = (centers[init_center, 0] * size - data[:, j][0]) / (size-1)
-            centers[init_center, 1] = (centers[init_center, 1] * size - data[:, j][1]) / (size-1)
+            centers[init_center, 0] = (centers[init_center, 0] * size - data[0, j]) / (size-1)
+            centers[init_center, 1] = (centers[init_center, 1] * size - data[1, j]) / (size-1)
             #centers = calcMeanOfCenter(centers, index, init_center)  # recalculate mean for center i
             min_error = sys.float_info.max
             proper_cluster = -1
@@ -161,10 +159,9 @@ def Hartigan(data, k):
                 converged = True  # continue iterations
 
             size = sum(index == proper_cluster)
-            #size = calNumOfCenter(index, proper_cluster)
             index[j] = proper_cluster  # assign point to cluster for which objective function is the lowest
-            centers[proper_cluster, 0] = (centers[proper_cluster, 0] * size + data[:, j][0]) / (size+1)
-            centers[proper_cluster, 1] = (centers[proper_cluster, 1] * size + data[:, j][1]) / (size+1)
+            centers[proper_cluster, 0] = (centers[proper_cluster, 0] * size + data[0, j]) / (size+1)
+            centers[proper_cluster, 1] = (centers[proper_cluster, 1] * size + data[1, j]) / (size+1)
             #centers = calcMeanOfCenter(centers, index, proper_cluster)  # recalculate mean for center i
 
     return index, centers
@@ -245,6 +242,6 @@ axs2 = plotData(data, indexes, centers, 3, "Hartigan", axs2)
 axs3 = plotData(data, indexes, centers, 3, "MacQueen", axs3)
 
 plt.show()
-measureAlgRunTimes(data)
+#measureAlgRunTimes(data)
 
 
