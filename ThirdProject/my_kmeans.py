@@ -53,7 +53,7 @@ def calcMeanOfCenter(centers, index, i):
     centers[i, 1] = 0.0
 
     # calculate new position of centroid i
-    num_of_points_in_cluster = sum((index) == i)  # sum number of points assigned to a center
+    num_of_points_in_cluster = sum(index == i)  # sum number of points assigned to a center
 
     for j in range(len(index)):  # loop over all indexes of points
         if index[j] == i:  # if point is assigned to center add it
@@ -66,12 +66,14 @@ def calcMeanOfCenter(centers, index, i):
 
     return centers
 
+
 def calNumOfCenter(index, i):
     count = 0
     for j in range(len(index)):
         if index[j] == i:
             ++count
     return count
+
 
 def determineWinnerCentroid(centers, x):
     min_dist = sys.float_info.max
@@ -139,10 +141,11 @@ def Hartigan(data, k):
     while converged is False:
         for j in range(len(data[0, :])):
             init_center = index[j]  # get center i of point j
-            size = calNumOfCenter(index, init_center)
+            size = sum(index == init_center)
+            #size = calNumOfCenter(index, init_center)
             index[j] = -1  # remove point j from center
-            centers[init_center, 0] * size - data[:, j][0]/ (size-1)
-            centers[init_center, 1] * size - data[:, j][1]/ (size-1)
+            centers[init_center, 0] = (centers[init_center, 0] * size - data[:, j][0]) / (size-1)
+            centers[init_center, 1] = (centers[init_center, 1] * size - data[:, j][1]) / (size-1)
             #centers = calcMeanOfCenter(centers, index, init_center)  # recalculate mean for center i
             min_error = sys.float_info.max
             proper_cluster = -1
@@ -157,14 +160,14 @@ def Hartigan(data, k):
             if proper_cluster == init_center:  # if change in assignment to centers was found
                 converged = True  # continue iterations
 
+            size = sum(index == proper_cluster)
+            #size = calNumOfCenter(index, proper_cluster)
             index[j] = proper_cluster  # assign point to cluster for which objective function is the lowest
-            size = calNumOfCenter(index, proper_cluster)
-            centers[proper_cluster, 0] * size + data[:, j][0]/ (size+1)
-            centers[proper_cluster, 1] * size + data[:, j][1]/ (size+1)
+            centers[proper_cluster, 0] = (centers[proper_cluster, 0] * size + data[:, j][0]) / (size+1)
+            centers[proper_cluster, 1] = (centers[proper_cluster, 1] * size + data[:, j][1]) / (size+1)
             #centers = calcMeanOfCenter(centers, index, proper_cluster)  # recalculate mean for center i
 
     return index, centers
-
 
 def MacQueen(data , k):
     min_val_X = min(data[0, :])
