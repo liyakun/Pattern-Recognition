@@ -37,15 +37,15 @@ def assignPointsToNearestCluster(centers, data):
     return index
 
 
-def calculateObjectiveFunction(centers, data, index, j, i):
+def calculateObjectiveFunction(centers, data, index, j, i, original_size, new_center0, new_center1):
     #error = 0.0
     #for i in range(len(data[0, :])):
     #    for j in range(len(centers[:, 0])):
     #        if index[i] == j:
     #            error += calcDistance(centers[j, :], data[:, i])
-    return calcDistance(centers[j, :], data[:, i])
+    new_center = [new_center0, new_center1]
+    return calcDistance(new_center, data[:, i]) + original_size * calcDistance(centers[j, :], new_center)
 
-    #return error
 
 
 def calcMeanOfCenter(centers, index, i):
@@ -67,14 +67,6 @@ def calcMeanOfCenter(centers, index, i):
     return centers
 
 
-def calNumOfCenter(index, i):
-    count = 0
-    for j in range(len(index)):
-        if index[j] == i:
-            ++count
-    return count
-
-
 def determineWinnerCentroid(centers, x):
     min_dist = sys.float_info.max
     center_index = -1
@@ -88,13 +80,10 @@ def determineWinnerCentroid(centers, x):
 
 
 def LIoyds(data, k):
-    min_val_X = min(data[0, :])
-    min_val_Y = min(data[1, :])
-    max_val_X = max(data[0, :])
-    max_val_Y = max(data[1, :])
+    min_val_X, min_val_Y, max_val_X, max_val_Y = min(data[0, :]), min(data[1, :]), max(data[0, :]), max(data[1, :])
 
     # initialize centers
-    centers = np.zeros((k, 2), np.float64 )
+    centers = np.zeros((k, 2), np.float64)
     for i in range(k):
         centers[i, 0] = random.uniform(min_val_X, max_val_X)
         centers[i, 1] = random.uniform(min_val_Y, max_val_Y)
@@ -103,7 +92,9 @@ def LIoyds(data, k):
     index_previous = np.zeros(len(data[0, :]))
 
     # loop until there is no change in assignment to clusters
+    count = 0
     while True:
+        count+=1
         index = assignPointsToNearestCluster(centers, data)
 
         # if assignment to centers did not change then stop algorithm
@@ -115,55 +106,57 @@ def LIoyds(data, k):
             centers = calcMeanOfCenter(centers, index, l)
 
         index_previous = np.copy(index)
-
+    print count
     return index, centers
 
 
 def Hartigan(data, k):
     # initialize centers
     centers = np.zeros((k, 2), np.float64)
+    n = len(data[0, :])
 
     # randomly assign points to clusters
-    index = np.zeros(len(data[0, :]))
-    for i in range(len(data[0, :])):
+    index = np.zeros(n)
+    for i in range(n):
         index[i] = random.randint(0, k-1)
 
-    # compute mean of centers
+    # compute mean of centers, we only need to compute before iteration once
     for i in range(0, k):
         centers = calcMeanOfCenter(centers, index, i)
 
-    # compute object function result for each cluster
-    # object_result = [calculateObjectiveFunction(centers, data, index)]
-
     converged = False
     # loop until there is no change in assignment to clusters
+    count = 0
     while converged is False:
-        for j in range(len(data[0, :])):
+        count+=1
+        converged = True
+        for j in range(n):
             init_center = index[j]  # get center i of point j
-            size = sum(index == init_center)
+            original_size = sum(index == init_center)
             index[j] = -1  # remove point j from center
-            centers[init_center, 0] = (centers[init_center, 0] * size - data[0, j]) / (size-1)
-            centers[init_center, 1] = (centers[init_center, 1] * size - data[1, j]) / (size-1)
-            #centers = calcMeanOfCenter(centers, index, init_center)  # recalculate mean for center i
+            centers[init_center, 0] = (centers[init_center, 0] * original_size - data[0, j]) / (original_size-1)
+            centers[init_center, 1] = (centers[init_center, 1] * original_size - data[1, j]) / (original_size-1)
             min_error = sys.float_info.max
             proper_cluster = -1
 
             for i in range(k):
+                original_size = sum(index == i)
                 index[j] = i  # assign point j to cluster i
-                objFunResult = calculateObjectiveFunction(centers, data, index, i, j)
+                new_center0 = (centers[i, 0] * original_size + data[0, j]) / (original_size+1)
+                new_center1 = (centers[i, 1] * original_size + data[1, j]) / (original_size+1)
+                objFunResult = calculateObjectiveFunction(centers, data, index, i, j, original_size, new_center0, new_center1)
                 if min_error > objFunResult:
                     min_error = objFunResult
                     proper_cluster = i
 
-            if proper_cluster == init_center:  # if change in assignment to centers was found
-                converged = True  # continue iterations
+            if proper_cluster != init_center:  # if no change in assignment to centers
+                converged = False  # converged
 
             size = sum(index == proper_cluster)
             index[j] = proper_cluster  # assign point to cluster for which objective function is the lowest
             centers[proper_cluster, 0] = (centers[proper_cluster, 0] * size + data[0, j]) / (size+1)
             centers[proper_cluster, 1] = (centers[proper_cluster, 1] * size + data[1, j]) / (size+1)
-            #centers = calcMeanOfCenter(centers, index, proper_cluster)  # recalculate mean for center i
-
+    print count
     return index, centers
 
 def MacQueen(data , k):
@@ -184,7 +177,7 @@ def MacQueen(data , k):
         n += 1
         centers[center_index, :] += 1/float(n)*(data[:, j] - centers[center_index, :])
 
-    index = assignPointsToNearestCluster(centers , data)
+    index = assignPointsToNearestCluster(centers, data)
 
     return index, centers
 
