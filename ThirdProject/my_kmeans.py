@@ -3,7 +3,7 @@ import random
 import sys
 import matplotlib.pyplot as plt
 import time
-
+from scipy.cluster.vq import kmeans2, kmeans
 
 def calcDistance(center, point):
     return np.sqrt(np.power(center[0] - point[0], 2) + np.power(center[1] - point[1], 2))
@@ -79,6 +79,14 @@ def determineWinnerCentroid(centers, x):
     return center_index
 
 
+def LIoyds_Built_in(data, k):
+
+    data_transposed = np.transpose(data)
+    centers , distortion_factor = kmeans( data_transposed , k)
+    index = assignPointsToNearestCluster(centers, data)
+
+    return index, centers
+
 def LIoyds(data, k):
     min_val_X, min_val_Y, max_val_X, max_val_Y = min(data[0, :]), min(data[1, :]), max(data[0, :]), max(data[1, :])
 
@@ -106,7 +114,7 @@ def LIoyds(data, k):
             centers = calcMeanOfCenter(centers, index, l)
 
         index_previous = np.copy(index)
-    print count
+    #print count
     return index, centers
 
 
@@ -156,7 +164,7 @@ def Hartigan(data, k):
             index[j] = proper_cluster  # assign point to cluster for which objective function is the lowest
             centers[proper_cluster, 0] = (centers[proper_cluster, 0] * size + data[0, j]) / (size+1)
             centers[proper_cluster, 1] = (centers[proper_cluster, 1] * size + data[1, j]) / (size+1)
-    print count
+    #print count
     return index, centers
 
 def MacQueen(data , k):
@@ -196,6 +204,14 @@ def plotData(data , indexes , centers , k,  str, axs):
 def measureAlgRunTimes(data):
     start = time.time()
     for i in range(10):
+        LIoyds_Built_in(data, 3)
+    end = time.time()
+    avg_time = (end - start)/10.0
+
+    print "LIoyds algorithm built-in time:   ",avg_time
+
+    start = time.time()
+    for i in range(10):
         LIoyds(data, 3)
     end = time.time()
     avg_time = (end - start)/10.0
@@ -221,20 +237,25 @@ def measureAlgRunTimes(data):
 
 data = np.loadtxt('resources/data-clustering-1.csv', None, comments='#', delimiter=',')
 fig = plt.figure()
-axs1 = fig.add_subplot(131)
-axs2 = fig.add_subplot(132)
-axs3 = fig.add_subplot(133)
+axs1 = fig.add_subplot(141)
+axs2 = fig.add_subplot(142)
+axs3 = fig.add_subplot(143)
+axs4 = fig.add_subplot(144)
+
+[indexes, centers] = LIoyds_Built_in(data, 3)
+axs1 = plotData(data, indexes, centers, 3, "LIoyds built-in", axs1)
 
 [indexes, centers] = LIoyds(data, 3)
-axs1 = plotData(data, indexes, centers, 3, "LIoyds", axs1)
+axs2 = plotData(data, indexes, centers, 3, "LIoyds", axs2)
 
 [indexes, centers] = Hartigan(data, 3)
-axs2 = plotData(data, indexes, centers, 3, "Hartigan", axs2)
+axs3 = plotData(data, indexes, centers, 3, "Hartigan", axs3)
 
 [indexes, centers] = MacQueen(data, 3)
-axs3 = plotData(data, indexes, centers, 3, "MacQueen", axs3)
+axs4 = plotData(data, indexes, centers, 3, "MacQueen", axs4)
+
 
 plt.show()
-#measureAlgRunTimes(data)
+measureAlgRunTimes(data)
 
 
